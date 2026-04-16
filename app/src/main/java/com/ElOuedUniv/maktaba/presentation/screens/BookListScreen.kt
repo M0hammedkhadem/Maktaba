@@ -24,6 +24,7 @@ fun BookListScreen(
 ) {
     val books by viewModel.books.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val totalPages by viewModel.totalPages.collectAsState()
 
     Scaffold(
         topBar = {
@@ -53,6 +54,7 @@ fun BookListScreen(
                 } else {
                     BookList(
                         books = books,
+                        totalPages = totalPages,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -67,6 +69,7 @@ fun BookListScreen(
 @Composable
 fun BookList(
     books: List<Book>,
+    totalPages: Int,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -74,6 +77,29 @@ fun BookList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Bonus 1: Add a Book Counter
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Total Books: ${books.size}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    // Bonus 2: Display Total Pages
+                    Text(
+                        text = "Total Pages in Library: $totalPages",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
+
         items(books) { book ->
             BookItem(book = book)
         }
@@ -151,12 +177,6 @@ fun EmptyBooksMessage(modifier: Modifier = Modifier) {
         Text(
             text = "No books in your library",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Complete the TODO exercises in BookRepository.kt",
-            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
