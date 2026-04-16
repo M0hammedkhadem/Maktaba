@@ -9,6 +9,9 @@ interface BookRepository {
     
     fun getBookByIsbn(isbn: String): Book?
 
-    fun addBook(book: Book) // TODO: Students will implement this in TP3
-}
+    fun addBook(book: Book)
 
+    fun searchBooksByTitle(query: String): Flow<List<Book>>
+
+    fun getLongBooks(): Flow<List<Book>>
+}

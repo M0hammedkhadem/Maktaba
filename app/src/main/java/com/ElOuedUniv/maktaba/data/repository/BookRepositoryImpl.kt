@@ -6,24 +6,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BookRepositoryImpl @Inject constructor() : BookRepository {
 
-    private val _booksList = listOf(
-        Book(isbn = "11111", title = "Clean Code", nbPages = 10),
-        Book(isbn = "22222", title = "The Pragmatic Programmer", nbPages = 0),
-        Book(isbn = "33333", title = "Design Patterns", nbPages = 0),
-        Book(isbn = "44444", title = "Refactoring", nbPages = 0),
-        Book(isbn = "55555", title = "Head First Design Patterns", nbPages = 0)
+    private val _booksList = mutableListOf(
+        Book(isbn = "978-0132350884", title = "Clean Code", nbPages = 464),
+        Book(isbn = "978-0135957059", title = "The Pragmatic Programmer", nbPages = 352),
+        Book(isbn = "978-0201633610", title = "Design Patterns", nbPages = 395),
+        Book(isbn = "978-0201485677", title = "Refactoring", nbPages = 431),
+        Book(isbn = "978-0596009205", title = "Head First Design Patterns", nbPages = 688),
+        Book(isbn = "978-0262046305", title = "Introduction to Algorithms (CLRS)", nbPages = 1312),
+        Book(isbn = "978-0131103627", title = "The C Programming Language", nbPages = 272),
+        Book(isbn = "978-0735619678", title = "Code Complete", nbPages = 960),
+        Book(isbn = "978-1260084504", title = "Database System Concepts", nbPages = 1376),
+        Book(isbn = "978-1491974056", title = "Head First Android Development", nbPages = 786),
     )
 
     private val booksFlow = MutableSharedFlow<List<Book>>(replay = 1).apply {
-        tryEmit(_booksList)
+        tryEmit(_booksList.toList())
     }
     
     override fun getAllBooks(): Flow<List<Book>> = flow {
-        delay(2000) // Simulate delay
+        delay(1000) // Simulate delay
         emitAll(booksFlow)
     }
 
@@ -32,8 +40,19 @@ class BookRepositoryImpl @Inject constructor() : BookRepository {
     }
 
     override fun addBook(book: Book) {
-        // TODO: Exercise 2 - Implement adding a book to the list and emitting the new list
-        // Hint: This is a bit tricky with sharedFlow, think about how to update it.
+        _booksList.add(book)
+        booksFlow.tryEmit(_booksList.toList())
+    }
+
+    override fun searchBooksByTitle(query: String): Flow<List<Book>> {
+        return booksFlow.map { list ->
+            list.filter { it.title.contains(query, ignoreCase = true) }
+        }
+    }
+
+    override fun getLongBooks(): Flow<List<Book>> {
+        return booksFlow.map { list ->
+            list.filter { it.nbPages > 400 }
+        }
     }
 }
-

@@ -7,25 +7,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CategoryRepositoryImpl @Inject constructor() : CategoryRepository {
 
     private val _categoriesList = listOf(
-        Category(
-            id = "1",
-            name = "Programming",
-            description = "Books about software development and coding"
-        ),
-        Category(
-            id = "2",
-            name = "Algorithms",
-            description = "Books about algorithms and data structures"
-        ),
-        Category(
-            id = "3",
-            name = "Databases",
-            description = "Books about database design and management"
-        )
+        Category(id = "1", name = "Programming", description = "Books about software development and coding"),
+        Category(id = "2", name = "Algorithms", description = "Books about algorithms and data structures"),
+        Category(id = "3", name = "Databases", description = "Books about database design and management"),
+        Category(id = "4", name = "Mobile Development", description = "Android and iOS development"),
+        Category(id = "5", name = "Artificial Intelligence", description = "Machine learning and neural networks")
     )
 
     private val categoriesFlow = MutableSharedFlow<List<Category>>(replay = 1).apply {
@@ -33,7 +25,7 @@ class CategoryRepositoryImpl @Inject constructor() : CategoryRepository {
     }
     
     override fun getAllCategories(): Flow<List<Category>> = flow {
-        delay(2000) // Simulate delay
+        delay(1000) // Simulate delay
         emitAll(categoriesFlow)
     }
 
