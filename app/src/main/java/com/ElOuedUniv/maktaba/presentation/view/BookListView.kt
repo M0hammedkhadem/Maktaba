@@ -24,6 +24,7 @@ fun BookListView(
 ) {
     val books by viewModel.books.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val totalPages by viewModel.totalPages.collectAsState()
 
     Scaffold(
         topBar = {
@@ -61,6 +62,8 @@ fun BookListView(
                 } else {
                     BookList(
                         books = books,
+                        totalCount = books.size,
+                        totalPages = totalPages,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -72,6 +75,8 @@ fun BookListView(
 @Composable
 fun BookList(
     books: List<Book>,
+    totalCount: Int,
+    totalPages: Int,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -79,16 +84,24 @@ fun BookList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item{
-            Text(
-                text = "Total Books: ${books.size}",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+        item {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
-
-            )}
+            ) {
+                Text(
+                    text = "Total Books: $totalCount",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Total Pages in Library: $totalPages",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
         items(books) { book ->
             BookItem(book = book)
         }
@@ -170,4 +183,3 @@ fun EmptyBooksMessage(modifier: Modifier = Modifier) {
         )
     }
 }
-

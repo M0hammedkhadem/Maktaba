@@ -7,6 +7,7 @@ import com.ElOuedUniv.maktaba.domain.usecase.GetBooksUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class BookViewModel(
@@ -18,6 +19,17 @@ class BookViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // Bonus 2: Calculate total pages
+    val totalPages: StateFlow<Int> = _books.map { list ->
+        list.sumOf { it.nbPages }
+    }.let { flow ->
+        val state = MutableStateFlow(0)
+        viewModelScope.launch {
+            flow.collect { state.value = it }
+        }
+        state.asStateFlow()
+    }
 
     init {
         loadBooks()
@@ -39,4 +51,3 @@ class BookViewModel(
         loadBooks()
     }
 }
-

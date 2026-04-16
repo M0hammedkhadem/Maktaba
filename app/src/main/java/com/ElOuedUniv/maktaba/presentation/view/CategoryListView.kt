@@ -79,6 +79,15 @@ fun CategoryList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Bonus 1: Add Category Count
+        item {
+            Text(
+                text = "Total Categories: ${categories.size}",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
         items(categories) { category ->
             CategoryItem(category = category)
         }

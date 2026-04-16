@@ -35,6 +35,11 @@ class CategoryViewModel(
         }
     }
 
+    // Bonus 2: Search Category by ID
+    fun getCategoryById(id: String): Category? {
+        return categories.value.find { it.id == id }
+    }
+
     fun refreshCategories() {
         loadCategories()
     }
