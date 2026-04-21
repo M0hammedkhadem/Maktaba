@@ -35,7 +35,13 @@ class BookViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
                 }
                 .collect { bookList ->
-                    _uiState.update { it.copy(isLoading = false, books = bookList) }
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false, 
+                            books = bookList,
+                            totalPages = bookList.sumOf { book -> book.nbPages }
+                        ) 
+                    }
                 }
         }
     }

@@ -10,4 +10,14 @@ interface BookRepository {
     fun getBookByIsbn(isbn: String): Book?
 
     fun addBook(book: Book)
+
+    /**
+     * Exercise 4.2 Challenge: Search books by title
+     */
+    fun searchBooksByTitle(query: String): List<Book>
+
+    /**
+     * Bonus Exercise 3: Filter books by page count (> 400)
+     */
+    fun getLongBooks(): List<Book>
 }

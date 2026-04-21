@@ -21,16 +21,45 @@ class AddBookViewModel @Inject constructor(
         when (action) {
             is AddBookUiAction.OnTitleChange -> {
                 _uiState.update { it.copy(title = action.title) }
+                validateInputs()
             }
             is AddBookUiAction.OnIsbnChange -> {
                 _uiState.update { it.copy(isbn = action.isbn) }
+                validateInputs()
             }
             is AddBookUiAction.OnPagesChange -> {
                 _uiState.update { it.copy(nbPages = action.pages) }
+                validateInputs()
             }
             AddBookUiAction.OnAddClick -> {
-                addBook()
+                if (_uiState.value.isFormValid) {
+                    addBook()
+                }
             }
+        }
+    }
+
+    private fun validateInputs() {
+        val state = _uiState.value
+        
+        val titleError = if (state.title.isBlank()) "Title cannot be empty" else null
+        val isbnError = if (state.isbn.length != 13 || !state.isbn.all { it.isDigit() }) {
+            "ISBN must be exactly 13 digits"
+        } else null
+        val pagesInt = state.nbPages.toIntOrNull()
+        val pagesError = if (pagesInt == null || pagesInt <= 0) {
+            "Pages must be a positive number"
+        } else null
+        
+        val isValid = titleError == null && isbnError == null && pagesError == null
+        
+        _uiState.update { 
+            it.copy(
+                titleError = titleError,
+                isbnError = isbnError,
+                pagesError = pagesError,
+                isFormValid = isValid
+            )
         }
     }
 
@@ -39,7 +68,8 @@ class AddBookViewModel @Inject constructor(
         val book = Book(
             isbn = currentState.isbn,
             title = currentState.title,
-            nbPages = currentState.nbPages.toIntOrNull() ?: 0
+            nbPages = currentState.nbPages.toIntOrNull() ?: 0,
+            imageUrl = null
         )
         addBookUseCase(book)
         _uiState.update { it.copy(isSuccess = true) }

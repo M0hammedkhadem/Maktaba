@@ -6,5 +6,11 @@ data class AddBookUiState(
     val nbPages: String = "",
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    
+    // Validation State
+    val titleError: String? = null,
+    val isbnError: String? = null,
+    val pagesError: String? = null,
+    val isFormValid: Boolean = false
 )
