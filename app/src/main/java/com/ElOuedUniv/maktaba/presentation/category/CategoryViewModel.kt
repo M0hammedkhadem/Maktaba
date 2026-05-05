@@ -43,4 +43,11 @@ class CategoryViewModel @Inject constructor(private val getCategoriesUseCase: Ge
     fun refreshCategories() {
         loadCategories()
     }
+
+    /**
+     * Bonus 2: Get category by ID
+     */
+    fun getCategoryById(id: String): Category? {
+        return categories.value.find { it.id == id }
+    }
 }
