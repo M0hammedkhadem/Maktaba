@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,23 +27,36 @@ fun CategoryListView(
     onBackClick: () -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
-    val categories by viewModel.categories.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    // TP3: Use single UiState pattern
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Handle UI Events (TP3 Exercise 3)
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                CategoryUiEvent.NavigateBack -> onBackClick()
+                is CategoryUiEvent.ShowSnackbar -> {
+                    // Show snackbar (would need scaffold state in real implementation)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { 
+                title = {
                     Text(
-                        "CATEGORIES", 
+                        "CATEGORIES",
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.ExtraBold,
                             letterSpacing = 2.sp
                         )
-                    ) 
+                    )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    // TP3: Use onAction instead of direct callback
+                    IconButton(onClick = { viewModel.onAction(CategoryUiAction.OnBackClick) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -61,18 +75,18 @@ fun CategoryListView(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            if (isLoading) {
+            if (uiState.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                if (categories.isEmpty()) {
+                if (uiState.categories.isEmpty()) {
                     EmptyCategoriesMessage(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
                     CategoryList(
-                        categories = categories,
+                        categories = uiState.categories,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
