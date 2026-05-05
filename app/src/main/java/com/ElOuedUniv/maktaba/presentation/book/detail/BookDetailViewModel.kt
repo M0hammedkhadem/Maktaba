@@ -2,7 +2,9 @@ package com.ElOuedUniv.maktaba.presentation.book.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ElOuedUniv.maktaba.domain.usecase.GetBookByIsbnUseCase
+import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,9 +27,11 @@ class BookDetailViewModel @Inject constructor(
     }
 
     private fun loadBook() {
-        _uiState.update { it.copy(isLoading = true) }
-        val book = getBookByIsbnUseCase(isbn)
-        _uiState.update { it.copy(isLoading = false, book = book) }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val book = getBookByIsbnUseCase(isbn)
+            _uiState.update { it.copy(isLoading = false, book = book) }
+        }
     }
 
     fun onAction(action: BookDetailUiAction) {

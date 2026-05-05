@@ -10,5 +10,7 @@ data class AddBookUiState(
     val titleError: String? = null,
     val isbnError: String? = null,
     val nbPagesError: String? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val imageBytes: ByteArray? = null,
+    val imageUri: android.net.Uri? = null
 )

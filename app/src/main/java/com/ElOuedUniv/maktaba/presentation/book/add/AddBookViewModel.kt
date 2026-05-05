@@ -1,7 +1,9 @@
 package com.ElOuedUniv.maktaba.presentation.book.add
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ElOuedUniv.maktaba.data.model.Book
+import kotlinx.coroutines.launch
 import com.ElOuedUniv.maktaba.domain.usecase.AddBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +32,9 @@ class AddBookViewModel @Inject constructor(
             is AddBookUiAction.OnPagesChange -> {
                 _uiState.update { it.copy(nbPages = action.pages) }
                 validateInputs()
+            }
+            is AddBookUiAction.OnImageSelected -> {
+                _uiState.update { it.copy(imageUri = action.uri, imageBytes = action.bytes) }
             }
             AddBookUiAction.OnAddClick -> {
                 if (_uiState.value.isFormValid) {
@@ -66,7 +71,15 @@ class AddBookViewModel @Inject constructor(
             title = currentState.title,
             nbPages = currentState.nbPages.toIntOrNull() ?: 0
         )
-        addBookUseCase(book)
-        _uiState.update { it.copy(isSuccess = true) }
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+                addBookUseCase(book, currentState.imageBytes)
+                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message ?: "Unknown Error") }
+            }
+        }
     }
 }
