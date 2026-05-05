@@ -28,6 +28,18 @@ class CategoryRepositoryImpl @Inject constructor() : CategoryRepository {
             name = "Databases",
             description = "Books about database design and management",
             iconRes = android.R.drawable.ic_menu_save
+        ),
+        Category(
+            id = "4",
+            name = "Mobile Development",
+            description = "Books about Android and iOS app development",
+            iconRes = android.R.drawable.ic_menu_call
+        ),
+        Category(
+            id = "5",
+            name = "Artificial Intelligence",
+            description = "Books about AI, machine learning and neural networks",
+            iconRes = android.R.drawable.ic_menu_gallery
         )
     )
 

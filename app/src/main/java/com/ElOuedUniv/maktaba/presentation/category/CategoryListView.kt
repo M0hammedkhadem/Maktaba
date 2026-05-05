@@ -91,8 +91,49 @@ fun CategoryList(
         contentPadding = PaddingValues(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        // Bonus 1: Category count header
+        item {
+            CategoryCountHeader(count = categories.size)
+        }
+        
         items(categories) { category ->
             CategoryItem(category = category)
+        }
+    }
+}
+
+/**
+ * Bonus 1: Category count header component
+ */
+@Composable
+fun CategoryCountHeader(count: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "📚",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "Total Categories: $count",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }
@@ -173,7 +214,7 @@ fun EmptyCategoriesMessage(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Complete the TODO exercises in TP2",
+            text = "Add a new category to get started",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
